@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Generate Access Key</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 30px;
+      background: #f0f2f5;
+    }
+    input[type="email"],
+    input[type="number"],
+    button {
+      padding: 10px;
+      font-size: 16px;
+      margin: 5px 0;
+      width: 300px;
+    }
+    button {
+      cursor: pointer;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 4px;
+    }
+    button:hover {
+      background-color: #0056b3;
+    }
+    .result {
+      margin-top: 20px;
+      background: #fff;
+      padding: 15px;
+      border-radius: 8px;
+      box-shadow: 0 0 5px rgba(0,0,0,0.1);
+    }
+  </style>
+</head>
+<body>
+  <h2>Nhập email và số tháng để tạo Access Key</h2>
+  <input type="email" id="emailInput" placeholder="Nhập email..." required />
+  <br />
+  <p>Nhập số tháng gia hạn</p>
+  <input type="number" id="monthsInput" placeholder="Số tháng gia hạn..." min="1" value="1" />
+  <br />
+  <button onclick="generateAccessKey()">Gửi</button>
+
+  <div class="result" id="resultArea" style="display: none;">
+    <p><strong>Email:</strong> <span id="resultEmail"></span></p>
+    <p><strong>Access Key:</strong> <span id="resultKey"></span></p>
+  </div>
+
+  <script>
+    async function generateAccessKey() {
+      const email = document.getElementById('emailInput').value;
+      const months = document.getElementById('monthsInput').value;
+
+      if (!email) {
+        alert('Vui lòng nhập email');
+        return;
+      }
+
+      if (!months || months <= 0) {
+        alert('Vui lòng nhập số tháng hợp lệ (lớn hơn 0)');
+        return;
+      }
+
+      try {
+        const response = await fetch(`http://localhost:3000/generate-access-key?email=${encodeURIComponent(email)}&months=${months}`);
+        const contentType = response.headers.get("content-type");
+
+        if (!response.ok) {
+          const errorText = await response.text();
+          alert(`Lỗi server: ${response.status} - ${errorText}`);
+          return;
+        }
+
+        if (!contentType || !contentType.includes("application/json")) {
+          const rawText = await response.text();
+          alert("Phản hồi không phải JSON: " + rawText);
+          return;
+        }
+
+        const data = await response.json();
+
+        document.getElementById('resultArea').style.display = 'block';
+        document.getElementById('resultEmail').textContent = data.email;
+        document.getElementById('resultKey').textContent = data.accessKey;
+
+      } catch (err) {
+        alert('Lỗi kết nối hoặc định dạng JSON');
+        console.error(err);
+      }
+    }
+  </script>
+</body>
+</html>
