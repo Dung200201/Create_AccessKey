@@ -1,11 +1,6 @@
-const express = require('express');
+// api/generate-access-key.js
 const mysql = require('mysql2/promise');
-const cors = require('cors');
 
-const app = express();
-app.use(cors());
-
-// Cấu hình kết nối MySQL
 const dbConfig = {
   host: '45.32.114.225',
   user: 'socialking',
@@ -13,7 +8,6 @@ const dbConfig = {
   database: 'socialking',
 };
 
-// Hàm tạo access_key ngẫu nhiên (3 chữ + 3 số)
 function generateAccessKey() {
   const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
   const digits = '0123456789';
@@ -27,23 +21,25 @@ function generateAccessKey() {
   return key;
 }
 
-// API dạng query string
-app.get('/generate-access-key', async (req, res) => {
-  const email = req.query.email;
-  const months = parseInt(req.query.months);
+export default async function handler(req, res) {
+  if (req.method !== 'GET') {
+    return res.status(405).json({ message: 'Only GET requests allowed' });
+  }
+
+  const { email, months } = req.query;
 
   if (!email) {
     return res.status(400).json({ message: 'Email is required in query string' });
   }
 
-  if (isNaN(months) || months <= 0) {
+  const monthsInt = parseInt(months);
+  if (isNaN(monthsInt) || monthsInt <= 0) {
     return res.status(400).json({ message: 'Months must be a positive number' });
   }
 
   try {
     const connection = await mysql.createConnection(dbConfig);
 
-    // Kiểm tra email đã tồn tại
     const [rows] = await connection.execute(
       'SELECT * FROM users WHERE email = ?',
       [email]
@@ -54,7 +50,6 @@ app.get('/generate-access-key', async (req, res) => {
       return res.status(200).json({ message: 'Email already exists', user: rows[0] });
     }
 
-    // Tạo accessKey duy nhất
     let accessKey;
     let exists = true;
 
@@ -72,7 +67,7 @@ app.get('/generate-access-key', async (req, res) => {
     await connection.execute(
       `INSERT INTO users (email, license_key, access_key, status, active_date, expiry_date, months)
        VALUES (?, ?, ?, ?, ?, ?, ?)`,
-      [email, '', accessKey, 'no_active', activeDate, null, months]
+      [email, '', accessKey, 'no_active', activeDate, null, monthsInt]
     );
 
     await connection.end();
@@ -82,9 +77,4 @@ app.get('/generate-access-key', async (req, res) => {
     console.error(error);
     return res.status(500).json({ message: 'Internal server error' });
   }
-});
-
-// Khởi động server
-app.listen(3000, () => {
-  console.log('API running at http://localhost:3000');
-});
+}
