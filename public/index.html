@@ -4,96 +4,249 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Quản lý Access Key</title>
-  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
   <style>
     :root {
-      --primary: #4f46e5;
+      --primary: #2563eb;
+      --primary-light: #3b82f6;
+      --primary-dark: #1d4ed8;
+      --primary-accent: #dbeafe;
       --bg: #f8fafc;
       --card-bg: #ffffff;
-      --text: #1f2937;
-      --muted: #6b7280;
+      --text: #1e293b;
+      --muted: #64748b;
+      --success: #10b981;
+      --error: #ef4444;
       --radius: 12px;
+      --shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+      --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     }
+    
     * {
       box-sizing: border-box;
-    }
-    body {
       margin: 0;
-      font-family: 'Roboto', sans-serif;
-      background: var(--bg);
+      padding: 0;
+    }
+    
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
       color: var(--text);
+      min-height: 100vh;
       display: flex;
       justify-content: center;
-      align-items: flex-start;
+      align-items: center;
       padding: 40px 20px;
     }
+    
     .container {
-      max-width: 800px;
+      max-width: 900px;
       width: 100%;
     }
-    .section {
-      background: var(--card-bg);
-      padding: 30px;
-      border-radius: var(--radius);
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-      margin-bottom: 30px;
-      transition: all 0.3s ease;
+    
+    .header {
+      text-align: center;
+      margin-bottom: 2rem;
     }
-    h2 {
-      margin-top: 0;
-      margin-bottom: 15px;
+    
+    .header h1 {
+      color: var(--primary-dark);
       font-weight: 600;
+      font-size: 2.2rem;
+      margin-bottom: 0.5rem;
     }
+    
+    .header p {
+      color: var(--muted);
+      font-size: 1.1rem;
+    }
+    
+    .card-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 20px;
+    }
+    
+    .card {
+      background: var(--card-bg);
+      padding: 2rem;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      transition: var(--transition);
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    }
+    
+    .card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, var(--primary) 0%, var(--primary-light) 100%);
+    }
+    
+    .card-icon {
+      display: flex;
+      align-items: center;
+      margin-bottom: 1.5rem;
+    }
+    
+    .icon {
+      background: var(--primary-accent);
+      color: var(--primary);
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      margin-right: 12px;
+    }
+    
+    .card h2 {
+      color: var(--primary-dark);
+      font-weight: 600;
+      font-size: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+    
+    .form-group {
+      margin-bottom: 1.25rem;
+    }
+    
     label {
       display: block;
-      font-size: 14px;
-      margin-bottom: 6px;
-      color: var(--muted);
+      font-size: 0.9rem;
+      font-weight: 500;
+      margin-bottom: 8px;
+      color: var(--text);
     }
+    
     input {
       width: 100%;
-      padding: 12px;
-      border-radius: 8px;
-      border: 1px solid #d1d5db;
-      margin-bottom: 16px;
-      font-size: 16px;
-      transition: 0.2s;
+      padding: 12px 16px;
+      border-radius: var(--radius);
+      border: 2px solid #e2e8f0;
+      background: #f8fafc;
+      font-size: 1rem;
+      font-family: inherit;
+      transition: var(--transition);
     }
+    
     input:focus {
       border-color: var(--primary);
       outline: none;
+      background: white;
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
     }
+    
     button {
-      background: var(--primary);
+      background: linear-gradient(90deg, var(--primary) 0%, var(--primary-light) 100%);
       color: white;
       border: none;
-      padding: 12px 16px;
-      font-size: 16px;
-      border-radius: 8px;
+      padding: 14px 20px;
+      font-size: 1rem;
+      font-weight: 500;
+      border-radius: var(--radius);
       cursor: pointer;
-      transition: 0.2s;
+      transition: var(--transition);
       width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      letter-spacing: 0.5px;
     }
+    
     button:hover {
-      background: #4338ca;
+      background: linear-gradient(90deg, var(--primary-dark) 0%, var(--primary) 100%);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
     }
+    
+    button:active {
+      transform: translateY(0);
+    }
+    
     .result {
-      margin-top: 15px;
-      font-size: 15px;
-      color: green;
+      margin-top: 1.25rem;
+      padding: 12px;
+      border-radius: var(--radius);
+      font-size: 0.95rem;
+      transition: var(--transition);
+      opacity: 0;
+      transform: translateY(10px);
+      height: 0;
+      overflow: hidden;
     }
+    
+    .result.show {
+      opacity: 1;
+      transform: translateY(0);
+      height: auto;
+      padding: 16px;
+    }
+    
+    .success {
+      background-color: rgba(16, 185, 129, 0.1);
+      border: 1px solid rgba(16, 185, 129, 0.2);
+      color: var(--success);
+    }
+    
     .error {
-      color: red;
+      background-color: rgba(239, 68, 68, 0.1);
+      border: 1px solid rgba(239, 68, 68, 0.2);
+      color: var(--error);
     }
+    
     code {
-      background: #eef2ff;
-      padding: 3px 6px;
+      background: #f1f5f9;
+      padding: 4px 8px;
       border-radius: 4px;
       font-family: monospace;
+      font-size: 0.9rem;
+      color: var(--primary-dark);
+      word-break: break-all;
     }
-    @media (max-width: 600px) {
-      .section {
-        padding: 20px;
+    
+    .footer {
+      text-align: center;
+      margin-top: 3rem;
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+    
+    /* Animation for result display */
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+      .card-container {
+        grid-template-columns: 1fr;
+      }
+      
+      .header h1 {
+        font-size: 1.8rem;
+      }
+      
+      .card {
+        padding: 1.5rem;
       }
     }
   </style>
@@ -101,33 +254,64 @@
 <body>
 
 <div class="container">
-
-  <!-- Tạo Access Key -->
-  <div class="section">
-    <h2>🔐 Tạo Access Key mới</h2>
-    <label for="createEmail">Email</label>
-    <input type="email" id="createEmail" placeholder="example@email.com">
-    
-    <label for="createMonths">Thời hạn (tháng)</label>
-    <input type="number" id="createMonths" min="1" value="1">
-    
-    <button onclick="generateAccessKey()">Tạo Access Key</button>
-    <div class="result" id="createResult"></div>
+  <div class="header">
+    <h1>Quản Lý Access Key</h1>
+    <p>Tạo và gia hạn quyền truy cập cho người dùng</p>
   </div>
+  
+  <div class="card-container">
+    <!-- Tạo Access Key -->
+    <div class="card">
+      <div class="card-icon">
+        <div class="icon">🔐</div>
+        <h2>Tạo Access Key mới</h2>
+      </div>
+      
+      <div class="form-group">
+        <label for="createEmail">Email người dùng</label>
+        <input type="email" id="createEmail" placeholder="example@email.com">
+      </div>
+      
+      <div class="form-group">
+        <label for="createMonths">Thời hạn (tháng)</label>
+        <input type="number" id="createMonths" min="1" value="1">
+      </div>
+      
+      <button onclick="generateAccessKey()">
+        Tạo Access Key
+      </button>
+      
+      <div class="result" id="createResult"></div>
+    </div>
 
-  <!-- Gia hạn Access Key -->
-  <div class="section">
-    <h2>⏳ Gia hạn Access Key</h2>
-    <label for="renewEmail">Email</label>
-    <input type="email" id="renewEmail" placeholder="example@email.com">
+    <!-- Gia hạn Access Key -->
+    <div class="card">
+      <div class="card-icon">
+        <div class="icon">⏳</div>
+        <h2>Gia hạn Access Key</h2>
+      </div>
+      
+      <div class="form-group">
+        <label for="renewEmail">Email người dùng</label>
+        <input type="email" id="renewEmail" placeholder="example@email.com">
+      </div>
 
-    <label for="renewMonths">Số tháng gia hạn</label>
-    <input type="number" id="renewMonths" min="1" value="1">
+      <div class="form-group">
+        <label for="renewMonths">Số tháng gia hạn</label>
+        <input type="number" id="renewMonths" min="1" value="1">
+      </div>
 
-    <button onclick="renewAccessKey()">Gia hạn</button>
-    <div class="result" id="renewResult"></div>
+      <button onclick="renewAccessKey()">
+        Gia hạn quyền truy cập
+      </button>
+      
+      <div class="result" id="renewResult"></div>
+    </div>
   </div>
-
+  
+  <div class="footer">
+    © 2025 - Hệ thống quản lý Access Key
+  </div>
 </div>
 
 <script>
@@ -140,17 +324,34 @@
     const months = parseInt(document.getElementById("createMonths").value);
     const resultEl = document.getElementById("createResult");
     resultEl.textContent = "";
+    resultEl.classList.remove("show", "success", "error");
 
-    if (!isValidEmail(email)) return resultEl.innerHTML = '<span class="error">Email không hợp lệ</span>';
-    if (!months || months <= 0) return resultEl.innerHTML = '<span class="error">Thời hạn phải lớn hơn 0</span>';
+    if (!isValidEmail(email)) {
+      resultEl.innerHTML = '<span>Email không hợp lệ</span>';
+      resultEl.classList.add("show", "error");
+      return;
+    }
+    
+    if (!months || months <= 0) {
+      resultEl.innerHTML = '<span>Thời hạn phải lớn hơn 0</span>';
+      resultEl.classList.add("show", "error");
+      return;
+    }
 
     try {
       const res = await fetch(`/api/generate-access-key?email=${encodeURIComponent(email)}&months=${months}`);
       const data = await res.json();
+      
       if (!res.ok) throw new Error(data.message || 'Lỗi không xác định');
+      
       resultEl.innerHTML = `✅ Access Key: <code>${data.accessKey}</code>`;
+      resultEl.classList.add("show", "success");
+      
+      // Animation effect
+      resultEl.style.animation = 'fadeIn 0.5s ease forwards';
     } catch (err) {
-      resultEl.innerHTML = `<span class="error">❌ ${err.message}</span>`;
+      resultEl.innerHTML = `<span>❌ ${err.message}</span>`;
+      resultEl.classList.add("show", "error");
     }
   }
 
@@ -159,17 +360,34 @@
     const months = parseInt(document.getElementById("renewMonths").value);
     const resultEl = document.getElementById("renewResult");
     resultEl.textContent = "";
+    resultEl.classList.remove("show", "success", "error");
 
-    if (!isValidEmail(email)) return resultEl.innerHTML = '<span class="error">Email không hợp lệ</span>';
-    if (!months || months <= 0) return resultEl.innerHTML = '<span class="error">Số tháng phải lớn hơn 0</span>';
+    if (!isValidEmail(email)) {
+      resultEl.innerHTML = '<span>Email không hợp lệ</span>';
+      resultEl.classList.add("show", "error");
+      return;
+    }
+    
+    if (!months || months <= 0) {
+      resultEl.innerHTML = '<span>Số tháng phải lớn hơn 0</span>';
+      resultEl.classList.add("show", "error");
+      return;
+    }
 
     try {
       const res = await fetch(`/api/renew-access-key?email=${encodeURIComponent(email)}&months=${months}`);
       const data = await res.json();
+      
       if (!res.ok) throw new Error(data.message || 'Lỗi không xác định');
+      
       resultEl.innerHTML = `✅ Gia hạn thành công. Hạn mới: <b>${data.newExpiryDate}</b>`;
+      resultEl.classList.add("show", "success");
+      
+      // Animation effect  
+      resultEl.style.animation = 'fadeIn 0.5s ease forwards';
     } catch (err) {
-      resultEl.innerHTML = `<span class="error">❌ ${err.message}</span>`;
+      resultEl.innerHTML = `<span>❌ ${err.message}</span>`;
+      resultEl.classList.add("show", "error");
     }
   }
 </script>
