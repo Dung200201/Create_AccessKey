@@ -2,491 +2,113 @@
 <html lang="vi">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Quản lý Access Key</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
   <style>
-    :root {
-      --primary: #4361ee;
-      --primary-dark: #3a56d4;
-      --warning: #f8961e;
-      --light: #f8f9fa;
-      --dark: #212529;
-      --gray: #6c757d;
-      --border-radius: 8px;
-      --box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-      --transition: all 0.3s ease;
-    }
-    
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-    
     body {
-      font-family: 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+      font-family: Arial, sans-serif;
+      padding: 40px;
       background: #f0f2f5;
-      color: var(--dark);
-      line-height: 1.6;
-      padding: 40px 20px;
     }
-    
-    header {
-      text-align: center;
-      margin-bottom: 40px;
-    }
-    
-    .logo {
-      font-size: 24px;
-      font-weight: 700;
-      margin-bottom: 8px;
-      color: var(--primary);
-    }
-    
-    .container {
-      width: 100%;
-      max-width: 960px;
-      margin: 0 auto;
-    }
-    
-    .card-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-      gap: 24px;
-      margin-bottom: 40px;
-    }
-    
-    .card {
+    h2 { color: #333; }
+    .section {
       background: white;
-      border-radius: var(--border-radius);
-      box-shadow: var(--box-shadow);
-      padding: 24px;
-      transition: var(--transition);
+      padding: 20px;
+      margin-bottom: 30px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      width: 400px;
     }
-    
-    .card:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
-    }
-    
-    .card-header {
-      display: flex;
-      align-items: center;
-      margin-bottom: 20px;
-      gap: 12px;
-    }
-    
-    .card-icon {
-      width: 40px;
-      height: 40px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      border-radius: 50%;
-      background: var(--primary);
-      color: white;
-      font-size: 18px;
-    }
-    
-    .card h2 {
-      color: var(--dark);
-      font-size: 18px;
-      font-weight: 600;
-      margin: 0;
-    }
-    
-    .form-group {
-      margin-bottom: 16px;
-    }
-    
-    .form-group label {
-      display: block;
-      margin-bottom: 6px;
-      font-weight: 500;
-      color: var(--gray);
-      font-size: 14px;
-    }
-    
-    .form-control {
+    input, button {
       width: 100%;
-      padding: 12px 16px;
-      font-size: 15px;
-      border: 1px solid #ddd;
-      border-radius: var(--border-radius);
-      background-color: var(--light);
-      transition: var(--transition);
+      padding: 10px;
+      margin: 8px 0;
+      font-size: 16px;
     }
-    
-    .form-control:focus {
-      outline: none;
-      border-color: var(--primary);
-      box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.15);
-    }
-    
-    .btn {
-      display: inline-block;
-      padding: 12px 20px;
-      font-size: 15px;
-      font-weight: 500;
-      border: none;
-      border-radius: var(--border-radius);
-      background-color: var(--primary);
+    button {
+      background-color: #007bff;
       color: white;
-      cursor: pointer;
-      transition: var(--transition);
-      text-align: center;
-      width: 100%;
-    }
-    
-    .btn:hover {
-      background-color: var(--primary-dark);
-      transform: translateY(-2px);
-    }
-    
-    .btn:active {
-      transform: translateY(0);
-    }
-    
-    .btn-renew {
-      background-color: var(--warning);
-    }
-    
-    .btn-renew:hover {
-      background-color: #e67e00;
-    }
-    
-    .result-box {
-      margin-top: 20px;
-      padding: 16px;
-      border-radius: var(--border-radius);
-      background-color: #f9f9f9;
-      border-left: 4px solid #10b981;
-      display: none;
-    }
-    
-    .result-box.success {
-      background-color: #e3fcef;
-      border-left-color: #10b981;
-      display: block;
-    }
-    
-    .result-box.error {
-      background-color: #fee2e2;
-      border-left-color: #f72585;
-      display: block;
-    }
-    
-    .result-box code {
-      display: block;
-      margin-top: 8px;
-      padding: 12px;
-      background: rgba(255, 255, 255, 0.7);
-      border-radius: 4px;
-      font-family: monospace;
-      font-size: 14px;
-      overflow-wrap: break-word;
-      word-break: break-all;
-    }
-    
-    .spinner {
-      display: inline-block;
-      width: 16px;
-      height: 16px;
-      border: 2px solid rgba(255, 255, 255, 0.3);
-      border-radius: 50%;
-      border-top-color: white;
-      animation: spin 0.8s ease infinite;
-      margin-right: 8px;
-      vertical-align: middle;
-      visibility: hidden;
-    }
-    
-    @keyframes spin {
-      to { transform: rotate(360deg); }
-    }
-    
-    .loading .spinner {
-      visibility: visible;
-    }
-    
-    /* Tooltip styling */
-    .tooltip {
-      position: relative;
-      display: inline-block;
-      margin-left: 6px;
-      cursor: help;
-    }
-    
-    .tooltip .tooltip-text {
-      visibility: hidden;
-      width: 200px;
-      background-color: #333;
-      color: #fff;
-      text-align: center;
-      border-radius: 6px;
-      padding: 8px;
-      position: absolute;
-      z-index: 1;
-      bottom: 125%;
-      left: 50%;
-      transform: translateX(-50%);
-      opacity: 0;
-      transition: opacity 0.3s;
-      font-size: 12px;
-    }
-    
-    .tooltip:hover .tooltip-text {
-      visibility: visible;
-      opacity: 1;
-    }
-
-    /* Copy button for access key */
-    .copy-btn {
-      display: inline-block;
-      padding: 6px 12px;
-      background-color: #eee;
       border: none;
       border-radius: 4px;
       cursor: pointer;
-      font-size: 13px;
-      margin-top: 8px;
-      color: var(--dark);
-      transition: var(--transition);
     }
-    
-    .copy-btn:hover {
-      background-color: #ddd;
+    button:hover {
+      background-color: #0056b3;
     }
-    
-    /* Responsive Design */
-    @media screen and (max-width: 768px) {
-      .card-grid {
-        grid-template-columns: 1fr;
-      }
+    .result {
+      margin-top: 15px;
+      color: green;
+      font-weight: bold;
+    }
+    .error {
+      color: red;
     }
   </style>
 </head>
 <body>
-  <!-- Header -->
-  <header>
-    <div class="container">
-      <div class="logo">
-        <i class="fas fa-key"></i> Access Key Manager
-      </div>
-      <p>Hệ thống quản lý và tạo Access Key</p>
-    </div>
-  </header>
 
-  <!-- Main Content -->
-  <main class="container">
-    <div class="card-grid">
-      <!-- Tạo Access Key -->
-      <div class="card">
-        <div class="card-header">
-          <div class="card-icon">
-            <i class="fas fa-plus"></i>
-          </div>
-          <h2>Tạo Access Key mới</h2>
-        </div>
-        
-        <div class="form-group">
-          <label for="createEmail">Email người dùng</label>
-          <input type="email" id="createEmail" class="form-control" placeholder="Nhập email để tạo mới..." required>
-        </div>
-        
-        <div class="form-group">
-          <label for="createMonths">
-            Thời hạn hiệu lực
-            <span class="tooltip">
-              <i class="fas fa-info-circle"></i>
-              <span class="tooltip-text">Nhập số tháng mà key có hiệu lực</span>
-            </span>
-          </label>
-          <input type="number" id="createMonths" class="form-control" min="1" value="1">
-        </div>
-        
-        <div class="form-group">
-          <button id="createButton" class="btn" onclick="generateAccessKey()">
-            <span class="spinner"></span>
-            Tạo Access Key
-          </button>
-        </div>
-        
-        <div class="result-box" id="createResult"></div>
-      </div>
-      
-      <!-- Gia hạn Access Key -->
-      <div class="card">
-        <div class="card-header">
-          <div class="card-icon" style="background: var(--warning);">
-            <i class="fas fa-sync-alt"></i>
-          </div>
-          <h2>Gia hạn Access Key</h2>
-        </div>
-        
-        <div class="form-group">
-          <label for="renewEmail">Email người dùng</label>
-          <input type="email" id="renewEmail" class="form-control" placeholder="Nhập email cần gia hạn..." required>
-        </div>
-        
-        <div class="form-group">
-          <label for="renewMonths">
-            Thời gian gia hạn
-            <span class="tooltip">
-              <i class="fas fa-info-circle"></i>
-              <span class="tooltip-text">Nhập số tháng cần gia hạn thêm</span>
-            </span>
-          </label>
-          <input type="number" id="renewMonths" class="form-control" min="1" value="1">
-        </div>
-        
-        <div class="form-group">
-          <button id="renewButton" class="btn btn-renew" onclick="renewAccessKey()">
-            <span class="spinner"></span>
-            Gia hạn Access Key
-          </button>
-        </div>
-        
-        <div class="result-box" id="renewResult"></div>
-      </div>
-    </div>
-  </main>
+  <!-- Tạo Access Key -->
+  <div class="section">
+    <h2>Tạo Access Key mới</h2>
+    <input type="email" id="createEmail" placeholder="Nhập email để tạo mới..." required>
+    <input type="number" id="createMonths" placeholder="Số tháng hiệu lực" min="1" value="1">
+    <button onclick="generateAccessKey()">Tạo Access Key</button>
+    <div class="result" id="createResult"></div>
+  </div>
 
-  <script>
-    // Email validation function
-    function isValidEmail(email) {
-      return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  <!-- Gia hạn Access Key -->
+  <div class="section">
+    <h2>Gia hạn Access Key</h2>
+    <input type="email" id="renewEmail" placeholder="Nhập email cần gia hạn..." required>
+    <input type="number" id="renewMonths" placeholder="Số tháng gia hạn" min="1" value="1">
+    <button onclick="renewAccessKey()">Gia hạn</button>
+    <div class="result" id="renewResult"></div>
+  </div>
+
+<script>
+  function isValidEmail(email) {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  }
+
+  async function generateAccessKey() {
+    const email = document.getElementById("createEmail").value.trim();
+    const months = parseInt(document.getElementById("createMonths").value);
+    const resultEl = document.getElementById("createResult");
+    resultEl.textContent = "";
+
+    if (!isValidEmail(email)) return resultEl.innerHTML = '<span class="error">Email không hợp lệ</span>';
+    if (!months || months <= 0) return resultEl.innerHTML = '<span class="error">Số tháng phải lớn hơn 0</span>';
+
+    try {
+      const res = await fetch(`/api/generate-access-key?email=${encodeURIComponent(email)}&months=${months}`);
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.message || 'Lỗi không xác định');
+
+      resultEl.innerHTML = `✅ Access Key: <code>${data.accessKey}</code>`;
+    } catch (err) {
+      resultEl.innerHTML = `<span class="error">❌ ${err.message}</span>`;
     }
-    
-    // Format date function
-    function formatDate(dateString) {
-      const date = new Date(dateString);
-      return date.toLocaleDateString('vi-VN', {
-        day: '2-digit',
-        month: '2-digit',
-        year: 'numeric'
-      });
+  }
+
+  async function renewAccessKey() {
+    const email = document.getElementById("renewEmail").value.trim();
+    const months = parseInt(document.getElementById("renewMonths").value);
+    const resultEl = document.getElementById("renewResult");
+    resultEl.textContent = "";
+
+    if (!isValidEmail(email)) return resultEl.innerHTML = '<span class="error">Email không hợp lệ</span>';
+    if (!months || months <= 0) return resultEl.innerHTML = '<span class="error">Số tháng phải lớn hơn 0</span>';
+
+    try {
+      const res = await fetch(`/api/renew-access-key?email=${encodeURIComponent(email)}&months=${months}`);
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.message || 'Lỗi không xác định');
+
+      resultEl.innerHTML = `✅ Gia hạn thành công. Hạn mới: <b>${data.newExpiryDate}</b>`;
+    } catch (err) {
+      resultEl.innerHTML = `<span class="error">❌ ${err.message}</span>`;
     }
-    
-    // Copy to clipboard function
-    function copyToClipboard(text) {
-      navigator.clipboard.writeText(text).then(() => {
-        const copyBtn = document.querySelector('.copy-btn');
-        copyBtn.textContent = "Đã sao chép!";
-        setTimeout(() => {
-          copyBtn.textContent = "Sao chép key";
-        }, 2000);
-      });
-    }
-    
-    // Generate Access Key function
-    async function generateAccessKey() {
-      const email = document.getElementById("createEmail").value.trim();
-      const months = parseInt(document.getElementById("createMonths").value);
-      const resultEl = document.getElementById("createResult");
-      const button = document.getElementById("createButton");
-      
-      // Reset result
-      resultEl.innerHTML = "";
-      resultEl.className = "result-box";
-      
-      // Validation
-      if (!isValidEmail(email)) {
-        resultEl.innerHTML = '<i class="fas fa-exclamation-circle"></i> Email không hợp lệ';
-        resultEl.classList.add("error");
-        return;
-      }
-      
-      if (!months || months <= 0) {
-        resultEl.innerHTML = '<i class="fas fa-exclamation-circle"></i> Số tháng phải lớn hơn 0';
-        resultEl.classList.add("error");
-        return;
-      }
-      
-      // Show loading
-      button.classList.add("loading");
-      button.disabled = true;
-      
-      try {
-        const res = await fetch(`/api/generate-access-key?email=${encodeURIComponent(email)}&months=${months}`);
-        const data = await res.json();
-        
-        if (!res.ok) throw new Error(data.message || 'Lỗi không xác định');
-        
-        // Success result
-        resultEl.classList.add("success");
-        resultEl.innerHTML = `
-          <i class="fas fa-check-circle"></i> Access Key được tạo thành công!
-          <code>${data.accessKey}</code>
-          <div style="margin-top: 10px;">
-            <p>Ngày hết hạn: <strong>${formatDate(data.expiryDate || new Date(new Date().setMonth(new Date().getMonth() + months)))}</strong></p>
-          </div>
-          <button class="copy-btn" onclick="copyToClipboard('${data.accessKey}')">
-            <i class="fas fa-copy"></i> Sao chép key
-          </button>
-        `;
-        
-      } catch (err) {
-        resultEl.classList.add("error");
-        resultEl.innerHTML = `<i class="fas fa-exclamation-circle"></i> ${err.message}`;
-      } finally {
-        button.classList.remove("loading");
-        button.disabled = false;
-      }
-    }
-    
-    // Renew Access Key function
-    async function renewAccessKey() {
-      const email = document.getElementById("renewEmail").value.trim();
-      const months = parseInt(document.getElementById("renewMonths").value);
-      const resultEl = document.getElementById("renewResult");
-      const button = document.getElementById("renewButton");
-      
-      // Reset result
-      resultEl.innerHTML = "";
-      resultEl.className = "result-box";
-      
-      // Validation
-      if (!isValidEmail(email)) {
-        resultEl.innerHTML = '<i class="fas fa-exclamation-circle"></i> Email không hợp lệ';
-        resultEl.classList.add("error");
-        return;
-      }
-      
-      if (!months || months <= 0) {
-        resultEl.innerHTML = '<i class="fas fa-exclamation-circle"></i> Số tháng phải lớn hơn 0';
-        resultEl.classList.add("error");
-        return;
-      }
-      
-      // Show loading
-      button.classList.add("loading");
-      button.disabled = true;
-      
-      try {
-        const res = await fetch(`/api/renew-access-key?email=${encodeURIComponent(email)}&months=${months}`);
-        const data = await res.json();
-        
-        if (!res.ok) throw new Error(data.message || 'Lỗi không xác định');
-        
-        // Success result
-        resultEl.classList.add("success");
-        resultEl.innerHTML = `
-          <i class="fas fa-check-circle"></i> Gia hạn Access Key thành công!
-          <div style="margin-top: 10px;">
-            <p>Hạn mới: <strong>${formatDate(data.newExpiryDate)}</strong></p>
-          </div>
-        `;
-        
-      } catch (err) {
-        resultEl.classList.add("error");
-        resultEl.innerHTML = `<i class="fas fa-exclamation-circle"></i> ${err.message}`;
-      } finally {
-        button.classList.remove("loading");
-        button.disabled = false;
-      }
-    }
-  </script>
+  }
+</script>
+
 </body>
 </html>
