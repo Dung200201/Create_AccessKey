@@ -311,6 +311,18 @@
       <div class="result" id="renewResult"></div>
     </div>
   </div>
+
+  <!-- Danh sách khách hàng -->
+<div class="card" style="margin-top: 40px;">
+  <div class="card-icon">
+    <div class="icon">📋</div>
+    <h2>Danh sách khách hàng</h2>
+  </div>
+  
+  <div id="customerList" style="overflow-x: auto;">
+    <p>Đang tải danh sách...</p>
+  </div>
+</div>
   
   <div class="footer">
     © 2025 - Hệ thống quản lý Access Key
@@ -393,6 +405,55 @@
       resultEl.classList.add("show", "error");
     }
   }
+
+  async function loadCustomerList() {
+  const container = document.getElementById("customerList");
+  try {
+    const res = await fetch("/api/list-users");
+    const data = await res.json();
+
+    if (!res.ok) throw new Error(data.message || "Lỗi tải danh sách");
+
+    if (!Array.isArray(data.users) || data.users.length === 0) {
+      container.innerHTML = "<p>Không có khách hàng nào.</p>";
+      return;
+    }
+
+    const table = document.createElement("table");
+    table.style.width = "100%";
+    table.style.borderCollapse = "collapse";
+    table.style.marginTop = "10px";
+
+    table.innerHTML = `
+      <thead>
+        <tr>
+          <th style="text-align:left; padding: 10px; border-bottom: 1px solid #ccc;">Email</th>
+          <th style="text-align:left; padding: 10px; border-bottom: 1px solid #ccc;">Trạng thái</th>
+          <th style="text-align:left; padding: 10px; border-bottom: 1px solid #ccc;">Hết hạn</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${data.users.map(user => `
+          <tr>
+            <td style="padding: 10px;">${user.email}</td>
+            <td style="padding: 10px;">${user.status}</td>
+            <td style="padding: 10px;">${user.expiry_date ? new Date(user.expiry_date).toLocaleDateString("vi-VN") : "Chưa có"}</td>
+          </tr>
+        `).join("")}
+      </tbody>
+    `;
+    
+    container.innerHTML = "";
+    container.appendChild(table);
+
+    } catch (err) {
+      container.innerHTML = `<p style="color: red;">❌ ${err.message}</p>`;
+    }
+  }
+
+  // Gọi khi trang tải xong
+  window.addEventListener("DOMContentLoaded", loadCustomerList);
+
 </script>
 
 </body>
