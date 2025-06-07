@@ -566,22 +566,41 @@
     }
   }
 
-  async function loadCustomerList() {
+  let currentPage = 1;
+  const pageSize = 10;
+  let totalUsers = 0;
+
+  async function loadCustomerList(page = 1) {
     const container = document.getElementById("customerList");
+
+    const emailFilter = document.getElementById("filterEmail")?.value.trim();
+    const statusFilter = document.getElementById("filterStatus")?.value;
+    const dateFilter = document.getElementById("filterDate")?.value;
+
+    const params = new URLSearchParams();
+    params.append("page", page);
+    params.append("limit", pageSize);
+    if (emailFilter) params.append("email", emailFilter);
+    if (statusFilter) params.append("status", statusFilter);
+    if (dateFilter) params.append("expiryDateFilter", dateFilter);
+
     try {
-      const res = await fetch("/api/list-users");
+      const res = await fetch(`/api/list-users?${params.toString()}`);
       const data = await res.json();
 
       if (!res.ok) throw new Error(data.message || "Lỗi tải danh sách");
 
       if (!Array.isArray(data.users) || data.users.length === 0) {
         container.innerHTML = "<p class='no-results'>Không có khách hàng nào.</p>";
-        allUsers = [];
+        totalUsers = 0;
+        renderPagination();
         return;
       }
 
-      allUsers = data.users; // Lưu trữ dữ liệu gốc
-      renderCustomerTable(allUsers);
+      currentPage = data.page;
+      totalUsers = data.total;
+      renderCustomerTable(data.users);
+      renderPagination();
 
     } catch (err) {
       container.innerHTML = `<p style="color: red;">❌ ${err.message}</p>`;
@@ -590,9 +609,9 @@
 
   function renderCustomerTable(users) {
     const container = document.getElementById("customerList");
-    
+
     if (users.length === 0) {
-      container.innerHTML = "<p class='no-results'>Không tìm thấy khách hàng nào phù hợp với bộ lọc.</p>";
+      container.innerHTML = "<p class='no-results'>Không tìm thấy khách hàng nào phù hợp.</p>";
       return;
     }
 
@@ -612,7 +631,7 @@
           const isExpired = user.expiry_date && new Date(user.expiry_date) < new Date();
           const isExpiringSoon = user.expiry_date && !isExpired && (new Date(user.expiry_date) - new Date()) / (1000 * 3600 * 24) <= 7;
           const isNoActive = user.status?.toLowerCase() === 'no_active';
-          
+
           return `
             <tr style="${isExpired || isNoActive ? 'background-color: rgba(239, 68, 68, 0.05);' : isExpiringSoon ? 'background-color: rgba(251, 191, 36, 0.05);' : ''}">
               <td style="font-weight: 500;">${user.email}</td>
@@ -623,9 +642,39 @@
         }).join("")}
       </tbody>
     `;
-    
+
     container.innerHTML = "";
     container.appendChild(table);
+  }
+
+  function renderPagination() {
+    const container = document.getElementById("paginationControls") || document.createElement("div");
+    const totalPages = Math.ceil(totalUsers / pageSize);
+
+    container.id = "paginationControls";
+    container.style.marginTop = "20px";
+    container.style.textAlign = "center";
+
+    let html = '';
+
+    if (currentPage > 1) {
+      html += `<button onclick="loadCustomerList(${currentPage - 1})">⬅ Trang trước</button>`;
+    }
+
+    for (let i = 1; i <= totalPages; i++) {
+      html += `<button onclick="loadCustomerList(${i})" ${i === currentPage ? 'style="font-weight:bold;"' : ''}>${i}</button>`;
+    }
+
+    if (currentPage < totalPages) {
+      html += `<button onclick="loadCustomerList(${currentPage + 1})">Trang sau ➡</button>`;
+    }
+
+    container.innerHTML = html;
+
+    const main = document.getElementById("customerList");
+    if (!document.getElementById("paginationControls")) {
+      main.parentNode.appendChild(container);
+    }
   }
 
   function getStatusClass(status) {
@@ -645,74 +694,18 @@
   }
 
   function applyFilters() {
-    const emailFilter = document.getElementById("filterEmail").value.toLowerCase().trim();
-    const statusFilter = document.getElementById("filterStatus").value;
-    const dateFilter = document.getElementById("filterDate").value;
-
-    let filteredUsers = allUsers.filter(user => {
-      // Lọc theo email
-      if (emailFilter && !user.email.toLowerCase().includes(emailFilter)) {
-        return false;
-      }
-
-      // Lọc theo trạng thái
-      if (statusFilter && user.status !== statusFilter) {
-        return false;
-      }
-
-      // Lọc theo ngày hết hạn
-      if (dateFilter && !filterByDate(user, dateFilter)) {
-        return false;
-      }
-
-      return true;
-    });
-
-    renderCustomerTable(filteredUsers);
-  }
-
-  function filterByDate(user, dateFilter) {
-    if (!user.expiry_date) return false;
-
-    const now = new Date();
-    now.setHours(0, 0, 0, 0); // Reset giờ về 00:00:00 để so sánh chính xác theo ngày
-    
-    const expiryDate = new Date(user.expiry_date);
-    expiryDate.setHours(0, 0, 0, 0);
-    
-    const timeDiff = expiryDate.getTime() - now.getTime();
-    const daysDiff = Math.ceil(timeDiff / (1000 * 3600 * 24));
-
-    switch (dateFilter) {
-      case 'expired':
-        return daysDiff < 0;
-      case 'expiring-today':
-        return daysDiff === 0;
-      case 'expiring-3days':
-        return daysDiff >= 0 && daysDiff <= 3;
-      case 'expiring-week':
-        return daysDiff >= 0 && daysDiff <= 7;
-      case 'expiring-month':
-        return daysDiff >= 0 && daysDiff <= 30;
-      case 'this-month':
-        return expiryDate.getMonth() === now.getMonth() && expiryDate.getFullYear() === now.getFullYear();
-      case 'next-month':
-        const nextMonth = new Date(now.getFullYear(), now.getMonth() + 1, 1);
-        return expiryDate.getMonth() === nextMonth.getMonth() && expiryDate.getFullYear() === nextMonth.getFullYear();
-      default:
-        return true;
-    }
+    currentPage = 1;
+    loadCustomerList(currentPage);
   }
 
   function clearFilters() {
     document.getElementById("filterEmail").value = "";
     document.getElementById("filterStatus").value = "";
     document.getElementById("filterDate").value = "";
-    renderCustomerTable(allUsers);
+    loadCustomerList(1);
   }
 
-  // Gọi khi trang tải xong
-  window.addEventListener("DOMContentLoaded", loadCustomerList);
+  window.addEventListener("DOMContentLoaded", () => loadCustomerList(currentPage));
 
 </script>
 
