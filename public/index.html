@@ -133,7 +133,7 @@
       color: var(--text);
     }
     
-    input {
+    input, select {
       width: 100%;
       padding: 12px 16px;
       border-radius: var(--radius);
@@ -144,7 +144,7 @@
       transition: var(--transition);
     }
     
-    input:focus {
+    input:focus, select:focus {
       border-color: var(--primary);
       outline: none;
       background: white;
@@ -226,6 +226,117 @@
       font-size: 0.9rem;
     }
     
+    /* Filter styles */
+    .filter-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 15px;
+      margin-bottom: 20px;
+      padding: 20px;
+      background: var(--primary-accent);
+      border-radius: var(--radius);
+    }
+    
+    .filter-group {
+      display: flex;
+      flex-direction: column;
+    }
+    
+    .filter-group label {
+      font-size: 0.85rem;
+      font-weight: 500;
+      margin-bottom: 5px;
+      color: var(--primary-dark);
+    }
+    
+    .clear-filters {
+      background: var(--muted);
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      transition: var(--transition);
+      align-self: flex-end;
+      margin-top: 20px;
+    }
+    
+    .clear-filters:hover {
+      background: var(--text);
+      transform: translateY(-1px);
+    }
+    
+    /* Table styles */
+    .table-container {
+      overflow-x: auto;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
+    
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: white;
+      font-size: 0.95rem;
+    }
+    
+    th {
+      background: var(--primary);
+      color: white;
+      padding: 15px 12px;
+      text-align: left;
+      font-weight: 500;
+      font-size: 0.9rem;
+      position: sticky;
+      top: 0;
+    }
+    
+    td {
+      padding: 12px;
+      border-bottom: 1px solid #e2e8f0;
+      transition: var(--transition);
+    }
+    
+    tr:hover td {
+      background: var(--primary-accent);
+    }
+    
+    /* Status colors */
+    .status-active {
+      color: var(--success);
+      font-weight: 600;
+      padding: 4px 8px;
+      background: rgba(16, 185, 129, 0.1);
+      border-radius: 4px;
+      font-size: 0.9rem;
+    }
+    
+    .status-expired {
+      color: var(--error);
+      font-weight: 600;
+      padding: 4px 8px;
+      background: rgba(239, 68, 68, 0.1);
+      border-radius: 4px;
+      font-size: 0.9rem;
+    }
+    
+    .status-pending {
+      color: var(--muted);
+      font-weight: 600;
+      padding: 4px 8px;
+      background: rgba(100, 116, 139, 0.1);
+      border-radius: 4px;
+      font-size: 0.9rem;
+    }
+    
+    .no-results {
+      text-align: center;
+      padding: 40px;
+      color: var(--muted);
+      font-style: italic;
+    }
+    
     /* Animation for result display */
     @keyframes fadeIn {
       from {
@@ -241,6 +352,10 @@
     /* Responsive adjustments */
     @media (max-width: 768px) {
       .card-container {
+        grid-template-columns: 1fr;
+      }
+      
+      .filter-container {
         grid-template-columns: 1fr;
       }
       
@@ -313,16 +428,53 @@
   </div>
 
   <!-- Danh sách khách hàng -->
-<div class="card" style="margin-top: 40px;">
-  <div class="card-icon">
-    <div class="icon">📋</div>
-    <h2>Danh sách khách hàng</h2>
+  <div class="card" style="margin-top: 40px;">
+    <div class="card-icon">
+      <div class="icon">📋</div>
+      <h2>Danh sách khách hàng</h2>
+    </div>
+    
+    <!-- Bộ lọc -->
+    <div class="filter-container">
+      <div class="filter-group">
+        <label for="filterEmail">Lọc theo Email</label>
+        <input type="text" id="filterEmail" placeholder="Nhập email..." onkeyup="applyFilters()">
+      </div>
+      
+      <div class="filter-group">
+        <label for="filterStatus">Lọc theo Trạng thái</label>
+        <select id="filterStatus" onchange="applyFilters()">
+          <option value="">Tất cả trạng thái</option>
+          <option value="active">Hoạt động (Active)</option>
+          <option value="no_active">Không hoạt động (No Active)</option>
+        </select>
+      </div>
+      
+      <div class="filter-group">
+        <label for="filterDate">Lọc theo Ngày hết hạn</label>
+        <select id="filterDate" onchange="applyFilters()">
+          <option value="">Tất cả ngày</option>
+          <option value="expired">Đã hết hạn</option>
+          <option value="expiring-today">Hết hạn hôm nay</option>
+          <option value="expiring-3days">Hết hạn trong 3 ngày</option>
+          <option value="expiring-week">Hết hạn trong 1 tuần</option>
+          <option value="expiring-month">Hết hạn trong 1 tháng</option>
+          <option value="this-month">Hết hạn trong tháng này</option>
+          <option value="next-month">Hết hạn tháng sau</option>
+        </select>
+      </div>
+      
+      <button class="clear-filters" onclick="clearFilters()">
+        Xóa bộ lọc
+      </button>
+    </div>
+    
+    <div class="table-container">
+      <div id="customerList">
+        <p>Đang tải danh sách...</p>
+      </div>
+    </div>
   </div>
-  
-  <div id="customerList" style="overflow-x: auto;">
-    <p>Đang tải danh sách...</p>
-  </div>
-</div>
   
   <div class="footer">
     © 2025 - Hệ thống quản lý Access Key
@@ -330,6 +482,8 @@
 </div>
 
 <script>
+  let allUsers = []; // Lưu trữ toàn bộ danh sách người dùng
+  
   function isValidEmail(email) {
     return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
   }
@@ -364,6 +518,9 @@
       
       // Animation effect
       resultEl.style.animation = 'fadeIn 0.5s ease forwards';
+      
+      // Refresh customer list
+      loadCustomerList();
     } catch (err) {
       resultEl.innerHTML = `<span>❌ ${err.message}</span>`;
       resultEl.classList.add("show", "error");
@@ -400,6 +557,9 @@
       
       // Animation effect  
       resultEl.style.animation = 'fadeIn 0.5s ease forwards';
+      
+      // Refresh customer list
+      loadCustomerList();
     } catch (err) {
       resultEl.innerHTML = `<span>❌ ${err.message}</span>`;
       resultEl.classList.add("show", "error");
@@ -407,48 +567,148 @@
   }
 
   async function loadCustomerList() {
-  const container = document.getElementById("customerList");
-  try {
-    const res = await fetch("/api/list-users");
-    const data = await res.json();
+    const container = document.getElementById("customerList");
+    try {
+      const res = await fetch("/api/list-customers");
+      const data = await res.json();
 
-    if (!res.ok) throw new Error(data.message || "Lỗi tải danh sách");
+      if (!res.ok) throw new Error(data.message || "Lỗi tải danh sách");
 
-    if (!Array.isArray(data.users) || data.users.length === 0) {
-      container.innerHTML = "<p>Không có khách hàng nào.</p>";
+      if (!Array.isArray(data.users) || data.users.length === 0) {
+        container.innerHTML = "<p class='no-results'>Không có khách hàng nào.</p>";
+        allUsers = [];
+        return;
+      }
+
+      allUsers = data.users; // Lưu trữ dữ liệu gốc
+      renderCustomerTable(allUsers);
+
+    } catch (err) {
+      container.innerHTML = `<p style="color: red;">❌ ${err.message}</p>`;
+    }
+  }
+
+  function renderCustomerTable(users) {
+    const container = document.getElementById("customerList");
+    
+    if (users.length === 0) {
+      container.innerHTML = "<p class='no-results'>Không tìm thấy khách hàng nào phù hợp với bộ lọc.</p>";
       return;
     }
 
     const table = document.createElement("table");
-    table.style.width = "100%";
-    table.style.borderCollapse = "collapse";
-    table.style.marginTop = "10px";
-
     table.innerHTML = `
       <thead>
         <tr>
-          <th style="text-align:left; padding: 10px; border-bottom: 1px solid #ccc;">Email</th>
-          <th style="text-align:left; padding: 10px; border-bottom: 1px solid #ccc;">Trạng thái</th>
-          <th style="text-align:left; padding: 10px; border-bottom: 1px solid #ccc;">Hết hạn</th>
+          <th>Email</th>
+          <th>Trạng thái</th>
+          <th>Ngày hết hạn</th>
         </tr>
       </thead>
       <tbody>
-        ${data.users.map(user => `
-          <tr>
-            <td style="padding: 10px;">${user.email}</td>
-            <td style="padding: 10px;">${user.status}</td>
-            <td style="padding: 10px;">${user.expiry_date ? new Date(user.expiry_date).toLocaleDateString("vi-VN") : "Chưa có"}</td>
-          </tr>
-        `).join("")}
+        ${users.map(user => {
+          const statusClass = getStatusClass(user.status);
+          const expiryDate = user.expiry_date ? new Date(user.expiry_date).toLocaleDateString("vi-VN") : "Chưa có";
+          const isExpired = user.expiry_date && new Date(user.expiry_date) < new Date();
+          const isExpiringSoon = user.expiry_date && !isExpired && (new Date(user.expiry_date) - new Date()) / (1000 * 3600 * 24) <= 7;
+          const isNoActive = user.status?.toLowerCase() === 'no_active';
+          
+          return `
+            <tr style="${isExpired || isNoActive ? 'background-color: rgba(239, 68, 68, 0.05);' : isExpiringSoon ? 'background-color: rgba(251, 191, 36, 0.05);' : ''}">
+              <td style="font-weight: 500;">${user.email}</td>
+              <td><span class="${statusClass}">${getStatusDisplay(user.status)}</span></td>
+              <td style="font-weight: 500; ${isExpired ? 'color: var(--error);' : isExpiringSoon ? 'color: #f59e0b;' : ''}">${expiryDate}</td>
+            </tr>
+          `;
+        }).join("")}
       </tbody>
     `;
     
     container.innerHTML = "";
     container.appendChild(table);
+  }
 
-    } catch (err) {
-      container.innerHTML = `<p style="color: red;">❌ ${err.message}</p>`;
+  function getStatusClass(status) {
+    switch (status?.toLowerCase()) {
+      case 'active': return 'status-active';
+      case 'no_active': return 'status-expired';
+      default: return 'status-pending';
     }
+  }
+
+  function getStatusDisplay(status) {
+    switch (status?.toLowerCase()) {
+      case 'active': return 'Hoạt động';
+      case 'no_active': return 'Không hoạt động';
+      default: return status || 'Không xác định';
+    }
+  }
+
+  function applyFilters() {
+    const emailFilter = document.getElementById("filterEmail").value.toLowerCase().trim();
+    const statusFilter = document.getElementById("filterStatus").value;
+    const dateFilter = document.getElementById("filterDate").value;
+
+    let filteredUsers = allUsers.filter(user => {
+      // Lọc theo email
+      if (emailFilter && !user.email.toLowerCase().includes(emailFilter)) {
+        return false;
+      }
+
+      // Lọc theo trạng thái
+      if (statusFilter && user.status !== statusFilter) {
+        return false;
+      }
+
+      // Lọc theo ngày hết hạn
+      if (dateFilter && !filterByDate(user, dateFilter)) {
+        return false;
+      }
+
+      return true;
+    });
+
+    renderCustomerTable(filteredUsers);
+  }
+
+  function filterByDate(user, dateFilter) {
+    if (!user.expiry_date) return false;
+
+    const now = new Date();
+    now.setHours(0, 0, 0, 0); // Reset giờ về 00:00:00 để so sánh chính xác theo ngày
+    
+    const expiryDate = new Date(user.expiry_date);
+    expiryDate.setHours(0, 0, 0, 0);
+    
+    const timeDiff = expiryDate.getTime() - now.getTime();
+    const daysDiff = Math.ceil(timeDiff / (1000 * 3600 * 24));
+
+    switch (dateFilter) {
+      case 'expired':
+        return daysDiff < 0;
+      case 'expiring-today':
+        return daysDiff === 0;
+      case 'expiring-3days':
+        return daysDiff >= 0 && daysDiff <= 3;
+      case 'expiring-week':
+        return daysDiff >= 0 && daysDiff <= 7;
+      case 'expiring-month':
+        return daysDiff >= 0 && daysDiff <= 30;
+      case 'this-month':
+        return expiryDate.getMonth() === now.getMonth() && expiryDate.getFullYear() === now.getFullYear();
+      case 'next-month':
+        const nextMonth = new Date(now.getFullYear(), now.getMonth() + 1, 1);
+        return expiryDate.getMonth() === nextMonth.getMonth() && expiryDate.getFullYear() === nextMonth.getFullYear();
+      default:
+        return true;
+    }
+  }
+
+  function clearFilters() {
+    document.getElementById("filterEmail").value = "";
+    document.getElementById("filterStatus").value = "";
+    document.getElementById("filterDate").value = "";
+    renderCustomerTable(allUsers);
   }
 
   // Gọi khi trang tải xong
