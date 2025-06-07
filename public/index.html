@@ -569,7 +569,7 @@
   async function loadCustomerList() {
     const container = document.getElementById("customerList");
     try {
-      const res = await fetch("/api/list-customers");
+      const res = await fetch("/api/list-users");
       const data = await res.json();
 
       if (!res.ok) throw new Error(data.message || "Lỗi tải danh sách");

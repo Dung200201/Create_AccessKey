@@ -1,4 +1,4 @@
-// api/list-customers.js
+// api/list-users.js
 const mysql = require('mysql2/promise');
 
 const dbConfig = {
