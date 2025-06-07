@@ -17,8 +17,9 @@ export default async function handler(req, res) {
     const connection = await mysql.createConnection(dbConfig);
 
     const [users] = await connection.execute(
-      `SELECT email, status, expiry_date FROM users ORDER BY expiry_date ASC`
+    `SELECT email, status, expiry_date FROM users WHERE status != 'service_guests' ORDER BY expiry_date ASC`
     );
+
 
     await connection.end();
 
