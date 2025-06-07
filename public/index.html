@@ -348,6 +348,40 @@
         transform: translateY(0);
       }
     }
+
+    #paginationControls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    justify-content: center;
+    margin-top: 20px;
+    }
+
+    #paginationControls button {
+      background-color: white;
+      border: 1px solid var(--primary-light);
+      color: var(--primary-dark);
+      padding: 8px 14px;
+      font-size: 0.95rem;
+      font-family: 'Poppins', sans-serif;
+      border-radius: var(--radius);
+      cursor: pointer;
+      transition: var(--transition);
+      box-shadow: var(--shadow);
+    }
+
+    #paginationControls button:hover {
+      background-color: var(--primary-accent);
+      border-color: var(--primary);
+      transform: translateY(-1px);
+    }
+
+    #paginationControls button.active {
+      background: linear-gradient(90deg, var(--primary) 0%, var(--primary-light) 100%);
+      color: white;
+      font-weight: 600;
+    }
+
     
     /* Responsive adjustments */
     @media (max-width: 768px) {
@@ -652,21 +686,19 @@
     const totalPages = Math.ceil(totalUsers / pageSize);
 
     container.id = "paginationControls";
-    container.style.marginTop = "20px";
-    container.style.textAlign = "center";
 
     let html = '';
 
     if (currentPage > 1) {
-      html += `<button onclick="loadCustomerList(${currentPage - 1})">⬅ Trang trước</button>`;
+      html += `<button onclick="loadCustomerList(${currentPage - 1})">⬅</button>`;
     }
 
     for (let i = 1; i <= totalPages; i++) {
-      html += `<button onclick="loadCustomerList(${i})" ${i === currentPage ? 'style="font-weight:bold;"' : ''}>${i}</button>`;
+      html += `<button onclick="loadCustomerList(${i})" class="${i === currentPage ? 'active' : ''}">${i}</button>`;
     }
 
     if (currentPage < totalPages) {
-      html += `<button onclick="loadCustomerList(${currentPage + 1})">Trang sau ➡</button>`;
+      html += `<button onclick="loadCustomerList(${currentPage + 1})">➡</button>`;
     }
 
     container.innerHTML = html;
@@ -675,22 +707,15 @@
     if (!document.getElementById("paginationControls")) {
       main.parentNode.appendChild(container);
     }
-  }
-
-  function getStatusClass(status) {
-    switch (status?.toLowerCase()) {
-      case 'active': return 'status-active';
-      case 'no_active': return 'status-expired';
-      default: return 'status-pending';
     }
-  }
 
-  function getStatusDisplay(status) {
-    switch (status?.toLowerCase()) {
-      case 'active': return 'Hoạt động';
-      case 'no_active': return 'Không hoạt động';
-      default: return status || 'Không xác định';
-    }
+
+    function getStatusDisplay(status) {
+      switch (status?.toLowerCase()) {
+        case 'active': return 'Hoạt động';
+        case 'no_active': return 'Không hoạt động';
+        default: return status || 'Không xác định';
+      }
   }
 
   function applyFilters() {
