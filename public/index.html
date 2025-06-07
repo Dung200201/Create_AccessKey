@@ -381,7 +381,6 @@
       color: white;
       font-weight: 600;
     }
-
     
     /* Responsive adjustments */
     @media (max-width: 768px) {
@@ -707,15 +706,22 @@
     if (!document.getElementById("paginationControls")) {
       main.parentNode.appendChild(container);
     }
+  }
+
+  function getStatusClass(status) {
+    switch (status?.toLowerCase()) {
+      case 'active': return 'status-active';
+      case 'no_active': return 'status-expired';
+      default: return 'status-pending';
     }
+  }
 
-
-    function getStatusDisplay(status) {
-      switch (status?.toLowerCase()) {
-        case 'active': return 'Hoạt động';
-        case 'no_active': return 'Không hoạt động';
-        default: return status || 'Không xác định';
-      }
+  function getStatusDisplay(status) {
+    switch (status?.toLowerCase()) {
+      case 'active': return 'Hoạt động';
+      case 'no_active': return 'Không hoạt động';
+      default: return status || 'Không xác định';
+    }
   }
 
   function applyFilters() {
