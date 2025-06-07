@@ -354,92 +354,45 @@
       display: flex;
       justify-content: center;
       align-items: center;
-      margin: 30px 0;
-      padding: 20px 0;
-      border-top: 1px solid #e2e8f0;
+      margin: 20px 0;
     }
 
     /* Pagination controls */
     #paginationControls {
       display: flex;
       align-items: center;
-      gap: 8px;
-      background: white;
-      padding: 12px 20px;
-      border-radius: var(--radius);
-      box-shadow: var(--shadow);
-      border: 1px solid #e2e8f0;
+      gap: 5px;
     }
 
     /* Pagination buttons */
-    .pagination-btn {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      min-width: 32px;
-      height: 32px;
-      padding: 0;
-      border: none;
-      background: transparent;
-      color: var(--text);
+    .pagination-btn,
+    #paginationControls button {
+      min-width: 30px;
+      height: 30px;
+      border: 1px solid #ccc;
+      background: white;
+      color: #333;
       text-decoration: none;
-      border-radius: 6px;
-      font-size: 0.9rem;
-      font-weight: 500;
       cursor: pointer;
-      transition: var(--transition);
-      user-select: none;
+      font-size: 14px;
     }
 
-    .pagination-btn:hover {
-      background: var(--primary-accent);
-      color: var(--primary);
-      transform: translateY(-1px);
+    .pagination-btn:hover,
+    #paginationControls button:hover {
+      background: #f0f0f0;
     }
 
-    .pagination-btn.active {
-      background: var(--primary);
+    .pagination-btn.active,
+    #paginationControls button.active {
+      background: #007bff;
       color: white;
-      font-weight: 600;
+      border-color: #007bff;
     }
 
-    .pagination-btn.disabled {
+    .pagination-btn.disabled,
+    #paginationControls button:disabled {
       opacity: 0.5;
       cursor: not-allowed;
-      pointer-events: none;
-    }
-
-    /* Navigation buttons (prev/next) */
-    .pagination-btn.nav-btn {
-      font-size: 1.1rem;
-      padding: 4px 8px;
-      font-weight: 600;
-      min-width: 36px;
-    }
-
-    .pagination-btn.nav-btn:hover {
-      background: var(--primary);
-      color: white;
-    }
-
-    /* Ellipsis */
-    .pagination-ellipsis {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      min-width: 32px;
-      height: 32px;
-      color: var(--muted);
-      font-weight: 500;
-      user-select: none;
-    }
-
-    /* Page info */
-    .pagination-info {
-      margin-left: 20px;
-      color: var(--muted);
-      font-size: 0.9rem;
-      font-weight: 500;
     }
     
     /* Responsive adjustments */
